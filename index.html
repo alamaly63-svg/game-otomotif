@@ -87,7 +87,7 @@ const questions=[
 {icon:"🦺",q:"Saat bekerja di bengkel, penggunaan APD terutama bertujuan untuk...",a:["Melindungi keselamatan pekerja","Membuat pekerjaan lebih cepat","Menghemat bahan bakar","Menaikkan tenaga mesin"],c:0,e:"APD membantu melindungi pekerja dari risiko kecelakaan dan bahaya kerja."}
 ];
 
-let index=0,score=0,time=15,locked=false,timerId=null;
+let index=0,score=0,correctAnswers=0,time=15,locked=false,timerId=null;
 
 const $=id=>document.getElementById(id);
 function startTimer(){
@@ -111,7 +111,7 @@ function answer(choice){
 if(locked)return;locked=true;clearInterval(timerId);
 const q=questions[index], buttons=[...$("answers").children];
 buttons.forEach((b,n)=>{b.disabled=true;if(n===q.c)b.classList.add("correct")});
-if(choice===q.c){score+=100+Math.max(0,time)*5;buttons[choice].classList.add("correct");$("feedback").textContent="✅ BENAR! "+q.e}
+if(choice===q.c){correctAnswers++;score=Math.round((correctAnswers/questions.length)*100);buttons[choice].classList.add("correct");$("feedback").textContent="✅ BENAR! "+q.e}
 else if(choice===-1){$("feedback").textContent="⏰ WAKTU HABIS! Jawaban benar: "+q.a[q.c]+". "+q.e}
 else{buttons[choice].classList.add("wrong");$("feedback").textContent="❌ BELUM TEPAT. Jawaban benar: "+q.a[q.c]+". "+q.e}
 $("score").textContent=score;$("next").classList.remove("hidden");
@@ -120,9 +120,9 @@ $("next").onclick=()=>{index++;if(index>=questions.length)finish();else render()
 function finish(){
 clearInterval(timerId);$("game").classList.add("hidden");$("result").classList.remove("hidden");
 $("finalScore").textContent=score+" POIN";
-$("finalMessage").textContent=score>=1200?"🏆 Luar biasa! Kamu punya dasar otomotif yang sangat kuat!":score>=800?"🔥 Mantap! Pengetahuan otomotifmu bagus.":"🔧 Terus belajar dan coba lagi untuk memecahkan skor kamu!";
+$("finalMessage").textContent=score===100?"🏆 Sempurna! Semua jawaban benar!":score>=80?"🔥 Mantap! Pengetahuan otomotifmu sangat bagus.":score>=60?"👍 Bagus! Tinggal tingkatkan lagi.":"🔧 Terus belajar dan coba lagi untuk mendapatkan nilai lebih tinggi!";
 }
-$("again").onclick=()=>{index=0;score=0;$("score").textContent=0;$("game").classList.remove("hidden");$("result").classList.add("hidden");render()};
+$("again").onclick=()=>{index=0;score=0;correctAnswers=0;$("score").textContent=0;$("game").classList.remove("hidden");$("result").classList.add("hidden");render()};
 $("share").onclick=async()=>{
 const text="Saya mendapat "+score+" poin di Game Tebak Komponen Motor! 🔧🏍️ Berani kalahkan skor saya?";
 if(navigator.share){try{await navigator.share({title:"Game Tebak Komponen Motor",text:text,url:location.href})}catch(e){}}
