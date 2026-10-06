@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenge Otomotif - Tebak Komponen Motor</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#0b1220,#18263d);color:#fff;min-height:100vh}
+.app{width:min(760px,100%);margin:auto;padding:18px}
+.header{text-align:center;padding:12px 0 18px}
+.logo{display:inline-block;background:#f59e0b;color:#111;padding:7px 13px;border-radius:999px;font-weight:900;font-size:12px}
+h1{font-size:30px;margin:12px 0 6px}
+.subtitle{color:#cbd5e1;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.stat{background:#172338;border:1px solid #30415d;border-radius:16px;text-align:center;padding:11px}
+.stat b{display:block;font-size:21px}.stat span{font-size:11px;color:#94a3b8}
+.card{background:#162238;border:1px solid #30415d;border-radius:20px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.progress{height:7px;background:#334155;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.progress div{height:100%;width:0;background:#f59e0b;transition:.3s}
+.icon{height:145px;background:#0d1728;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:70px;margin-bottom:17px}
+.question{font-size:19px;line-height:1.45;font-weight:800;margin-bottom:15px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit}
+.answer,.mainbtn{min-height:50px;border-radius:13px;border:1px solid #40516b;background:#263752;color:#fff;padding:10px 12px;font-weight:800;cursor:pointer}
+.answer:hover{border-color:#f59e0b}
+.answer.correct{background:#166534;border-color:#22c55e}
+.answer.wrong{background:#991b1b;border-color:#ef4444}
+.answer:disabled{cursor:default}
+.feedback{min-height:46px;padding:12px 2px 2px;font-size:14px;line-height:1.45;font-weight:700}
+.mainbtn{width:100%;background:#f59e0b;color:#111827;border:0;margin-top:8px}
+.secondary{background:#22c55e;color:#fff}
+.hidden{display:none}
+.result{text-align:center}
+.result h2{font-size:26px}
+.finalscore{font-size:48px;font-weight:900;color:#fbbf24;margin:8px}
+.sharetext{color:#cbd5e1;line-height:1.5}
+.tip{font-size:12px;color:#94a3b8;margin-top:12px}
+@media(max-width:520px){h1{font-size:25px}.answers{grid-template-columns:1fr}.icon{height:120px;font-size:60px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="header">
+<div class="logo">🔧 GAME EDUKASI OTOMOTIF</div>
+<h1>TEBAK KOMPONEN MOTOR</h1>
+<div class="subtitle">Seberapa jago pengetahuan otomotif kamu? Buktikan sekarang!</div>
+</header>
+
+<div class="stats">
+<div class="stat"><b id="score">0</b><span>SKOR</span></div>
+<div class="stat"><b id="number">1/10</b><span>SOAL</span></div>
+<div class="stat"><b id="timer">15</b><span>DETIK</span></div>
+</div>
+
+<section id="game" class="card">
+<div class="progress"><div id="bar"></div></div>
+<div id="icon" class="icon">🏍️</div>
+<div id="question" class="question"></div>
+<div id="answers" class="answers"></div>
+<div id="feedback" class="feedback" aria-live="polite"></div>
+<button id="next" class="mainbtn hidden">SOAL BERIKUTNYA →</button>
+</section>
+
+<section id="result" class="card result hidden">
+<div class="logo">🏁 CHALLENGE SELESAI</div>
+<h2>Hasil Permainan</h2>
+<div id="finalScore" class="finalscore">0</div>
+<div id="finalMessage" class="sharetext"></div>
+<button id="share" class="mainbtn secondary">📤 BAGIKAN HASIL</button>
+<button id="again" class="mainbtn">🔄 MAIN LAGI</button>
+<div class="tip">Tantang temanmu dan lihat siapa yang mendapatkan skor tertinggi!</div>
+</section>
+</main>
+
+<script>
+const questions=[
+{icon:"🔋",q:"Komponen yang menyimpan dan menyuplai energi listrik kendaraan adalah...",a:["Aki","Radiator","Karburator","Kopling"],c:0,e:"Aki berfungsi menyimpan energi listrik dan menyuplai kebutuhan kelistrikan."},
+{icon:"🛢️",q:"Fungsi utama oli mesin adalah...",a:["Melumasi komponen","Mengisi ban","Mengisi aki","Menyaring udara"],c:0,e:"Oli mengurangi gesekan, membantu pendinginan, dan membawa kotoran menuju filter."},
+{icon:"⚡",q:"Pada sepeda motor injeksi, ECU berfungsi untuk...",a:["Mengendalikan sistem berdasarkan sensor","Memompa ban","Mendinginkan radiator","Mengisi oli"],c:0,e:"ECU mengolah input sensor dan mengendalikan berbagai aktuator."},
+{icon:"🔥",q:"Fungsi utama busi pada mesin bensin adalah...",a:["Menghasilkan percikan api","Menyaring oli","Mengatur tekanan ban","Mendinginkan mesin"],c:0,e:"Busi menghasilkan percikan untuk membakar campuran udara dan bahan bakar."},
+{icon:"🌡️",q:"Komponen yang membuang panas coolant ke udara adalah...",a:["Radiator","Kopling","Injektor","Rantai"],c:0,e:"Radiator melepaskan panas coolant melalui sirip-sirip pendinginnya."},
+{icon:"🛞",q:"Komponen yang menjadi kontak langsung kendaraan dengan jalan adalah...",a:["Ban","Busi","ECU","Aki"],c:0,e:"Ban menghasilkan kontak dan gaya gesek dengan permukaan jalan."},
+{icon:"🔩",q:"Alat yang tepat untuk mengukur diameter luar dengan ketelitian tinggi adalah...",a:["Mikrometer","Palu","Obeng","Tang"],c:0,e:"Mikrometer digunakan untuk pengukuran dimensi kecil dengan ketelitian tinggi."},
+{icon:"⛓️",q:"Rantai sepeda motor meneruskan tenaga dari...",a:["Sprocket depan ke sprocket belakang","Aki ke ECU","Radiator ke mesin","Rem ke roda"],c:0,e:"Rantai meneruskan putaran dari sprocket penggerak ke sprocket roda belakang."},
+{icon:"🧰",q:"Sebelum menggunakan alat ukur, hal yang penting dilakukan adalah...",a:["Memastikan alat sesuai fungsi dan kondisinya","Memukul alat","Merendam alat","Melepas skala"],c:0,e:"Pemilihan alat dan pemeriksaan kondisi membantu menghasilkan pengukuran yang benar."},
+{icon:"🦺",q:"Saat bekerja di bengkel, penggunaan APD terutama bertujuan untuk...",a:["Melindungi keselamatan pekerja","Membuat pekerjaan lebih cepat","Menghemat bahan bakar","Menaikkan tenaga mesin"],c:0,e:"APD membantu melindungi pekerja dari risiko kecelakaan dan bahaya kerja."}
+];
+
+let index=0,score=0,time=15,locked=false,timerId=null;
+
+const $=id=>document.getElementById(id);
+function startTimer(){
+clearInterval(timerId);time=15;$("timer").textContent=time;
+timerId=setInterval(()=>{time--;$("timer").textContent=time;
+if(time<=0){clearInterval(timerId);if(!locked)answer(-1);}
+},1000);
+}
+function render(){
+locked=false;clearInterval(timerId);
+const q=questions[index];
+$("number").textContent=(index+1)+"/"+questions.length;
+$("bar").style.width=((index)/questions.length*100)+"%";
+$("icon").textContent=q.icon;$("question").textContent=q.q;
+$("feedback").textContent="";$("next").classList.add("hidden");
+const box=$("answers");box.innerHTML="";
+q.a.forEach((txt,n)=>{const b=document.createElement("button");b.className="answer";b.textContent=txt;b.onclick=()=>answer(n);box.appendChild(b)});
+startTimer();
+}
+function answer(choice){
+if(locked)return;locked=true;clearInterval(timerId);
+const q=questions[index], buttons=[...$("answers").children];
+buttons.forEach((b,n)=>{b.disabled=true;if(n===q.c)b.classList.add("correct")});
+if(choice===q.c){score+=100+Math.max(0,time)*5;buttons[choice].classList.add("correct");$("feedback").textContent="✅ BENAR! "+q.e}
+else if(choice===-1){$("feedback").textContent="⏰ WAKTU HABIS! Jawaban benar: "+q.a[q.c]+". "+q.e}
+else{buttons[choice].classList.add("wrong");$("feedback").textContent="❌ BELUM TEPAT. Jawaban benar: "+q.a[q.c]+". "+q.e}
+$("score").textContent=score;$("next").classList.remove("hidden");
+}
+$("next").onclick=()=>{index++;if(index>=questions.length)finish();else render()};
+function finish(){
+clearInterval(timerId);$("game").classList.add("hidden");$("result").classList.remove("hidden");
+$("finalScore").textContent=score+" POIN";
+$("finalMessage").textContent=score>=1200?"🏆 Luar biasa! Kamu punya dasar otomotif yang sangat kuat!":score>=800?"🔥 Mantap! Pengetahuan otomotifmu bagus.":"🔧 Terus belajar dan coba lagi untuk memecahkan skor kamu!";
+}
+$("again").onclick=()=>{index=0;score=0;$("score").textContent=0;$("game").classList.remove("hidden");$("result").classList.add("hidden");render()};
+$("share").onclick=async()=>{
+const text="Saya mendapat "+score+" poin di Game Tebak Komponen Motor! 🔧🏍️ Berani kalahkan skor saya?";
+if(navigator.share){try{await navigator.share({title:"Game Tebak Komponen Motor",text:text,url:location.href})}catch(e){}}
+else{alert(text+" Salin alamat game dari browser untuk membagikannya.");}
+};
+render();
+</script>
+</body>
+</html>
