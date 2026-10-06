@@ -6,129 +6,374 @@
 <title>Challenge Otomotif - Tebak Komponen Motor</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#0b1220,#18263d);color:#fff;min-height:100vh}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#0b1220,#18263d);
+  color:#fff;
+  min-height:100vh;
+}
 .app{width:min(760px,100%);margin:auto;padding:18px}
-.header{text-align:center;padding:12px 0 18px}
-.logo{display:inline-block;background:#f59e0b;color:#111;padding:7px 13px;border-radius:999px;font-weight:900;font-size:12px}
+header{text-align:center;padding:12px 0 18px}
+.logo{
+  display:inline-block;background:#f59e0b;color:#111;padding:7px 13px;
+  border-radius:999px;font-weight:900;font-size:12px
+}
 h1{font-size:30px;margin:12px 0 6px}
 .subtitle{color:#cbd5e1;font-size:14px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
-.stat{background:#172338;border:1px solid #30415d;border-radius:16px;text-align:center;padding:11px}
-.stat b{display:block;font-size:21px}.stat span{font-size:11px;color:#94a3b8}
-.card{background:#162238;border:1px solid #30415d;border-radius:20px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
-.progress{height:7px;background:#334155;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.stat{
+  background:#172338;border:1px solid #30415d;border-radius:16px;
+  text-align:center;padding:11px
+}
+.stat b{display:block;font-size:21px}
+.stat span{font-size:11px;color:#94a3b8}
+.card{
+  background:#162238;border:1px solid #30415d;border-radius:20px;padding:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18)
+}
+.progress{
+  height:7px;background:#334155;border-radius:99px;overflow:hidden;margin-bottom:18px
+}
 .progress div{height:100%;width:0;background:#f59e0b;transition:.3s}
-.icon{height:145px;background:#0d1728;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:70px;margin-bottom:17px}
+.icon{
+  height:145px;background:#0d1728;border-radius:16px;display:flex;
+  align-items:center;justify-content:center;font-size:70px;margin-bottom:17px
+}
 .question{font-size:19px;line-height:1.45;font-weight:800;margin-bottom:15px}
 .answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 button{font:inherit}
-.answer,.mainbtn{min-height:50px;border-radius:13px;border:1px solid #40516b;background:#263752;color:#fff;padding:10px 12px;font-weight:800;cursor:pointer}
+.answer,.mainBtn{
+  min-height:50px;border-radius:13px;border:1px solid #40516b;
+  background:#263752;color:#fff;padding:10px 12px;font-weight:800;cursor:pointer
+}
 .answer:hover{border-color:#f59e0b}
 .answer.correct{background:#166534;border-color:#22c55e}
 .answer.wrong{background:#991b1b;border-color:#ef4444}
 .answer:disabled{cursor:default}
 .feedback{min-height:46px;padding:12px 2px 2px;font-size:14px;line-height:1.45;font-weight:700}
-.mainbtn{width:100%;background:#f59e0b;color:#111827;border:0;margin-top:8px}
+.mainBtn{
+  width:100%;background:#f59e0b;color:#111827;border:0;margin-top:8px
+}
 .secondary{background:#22c55e;color:#fff}
 .hidden{display:none}
 .result{text-align:center}
 .result h2{font-size:26px}
-.finalscore{font-size:48px;font-weight:900;color:#fbbf24;margin:8px}
-.sharetext{color:#cbd5e1;line-height:1.5}
-.tip{font-size:12px;color:#94a3b8;margin-top:12px}
-@media(max-width:520px){h1{font-size:25px}.answers{grid-template-columns:1fr}.icon{height:120px;font-size:60px}}
+.resultScore{
+  font-size:56px;font-weight:900;color:#f59e0b;margin:8px 0
+}
+.resultMessage{color:#cbd5e1;line-height:1.5}
+.smallNote{
+  color:#94a3b8;font-size:12px;margin-top:14px;text-align:center
+}
+@media(max-width:560px){
+  h1{font-size:24px}
+  .answers{grid-template-columns:1fr}
+  .icon{height:120px}
+}
 </style>
 </head>
+
 <body>
-<main class="app">
-<header class="header">
-<div class="logo">🔧 GAME EDUKASI OTOMOTIF</div>
-<h1>TEBAK KOMPONEN MOTOR</h1>
-<div class="subtitle">Seberapa jago pengetahuan otomotif kamu? Buktikan sekarang!</div>
+<div class="app">
+
+<header>
+  <div class="logo">GAME EDUKASI OTOMOTIF</div>
+  <h1>TEBAK KOMPONEN MOTOR</h1>
+  <div class="subtitle">Uji pengetahuan otomotifmu • 10 soal • 100 poin</div>
 </header>
 
-<div class="stats">
-<div class="stat"><b id="score">0</b><span>SKOR</span></div>
-<div class="stat"><b id="number">1/10</b><span>SOAL</span></div>
-<div class="stat"><b id="timer">15</b><span>DETIK</span></div>
+<div id="quizArea">
+  <div class="stats">
+    <div class="stat">
+      <b id="score">0</b>
+      <span>SKOR</span>
+    </div>
+    <div class="stat">
+      <b id="questionCount">1/10</b>
+      <span>SOAL</span>
+    </div>
+    <div class="stat">
+      <b id="time">15</b>
+      <span>DETIK</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="icon" id="icon">🏍️</div>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div class="smallNote">
+    Pilih jawaban yang paling tepat. Posisi jawaban diacak pada setiap permainan.
+  </div>
 </div>
 
-<section id="game" class="card">
-<div class="progress"><div id="bar"></div></div>
-<div id="icon" class="icon">🏍️</div>
-<div id="question" class="question"></div>
-<div id="answers" class="answers"></div>
-<div id="feedback" class="feedback" aria-live="polite"></div>
-<button id="next" class="mainbtn hidden">SOAL BERIKUTNYA →</button>
-</section>
+<div id="resultArea" class="card result hidden">
+  <div class="logo">HASIL PERMAINAN</div>
+  <h2>SKOR AKHIR</h2>
+  <div class="resultScore" id="finalScore">0 POIN</div>
+  <div id="finalCount">0/10 SOAL BENAR</div>
+  <p class="resultMessage" id="resultMessage"></p>
+  <button class="mainBtn secondary" id="shareBtn">📤 BAGIKAN HASIL</button>
+  <button class="mainBtn" id="restartBtn">🔄 MAIN LAGI</button>
+</div>
 
-<section id="result" class="card result hidden">
-<div class="logo">🏁 CHALLENGE SELESAI</div>
-<h2>Hasil Permainan</h2>
-<div id="finalScore" class="finalscore">0</div>
-<div id="finalMessage" class="sharetext"></div>
-<button id="share" class="mainbtn secondary">📤 BAGIKAN HASIL</button>
-<button id="again" class="mainbtn">🔄 MAIN LAGI</button>
-<div class="tip">Tantang temanmu dan lihat siapa yang mendapatkan skor tertinggi!</div>
-</section>
-</main>
+</div>
 
 <script>
-const questions=[
-{icon:"🔋",q:"Komponen yang menyimpan dan menyuplai energi listrik kendaraan adalah...",a:["Aki","Radiator","Karburator","Kopling"],c:0,e:"Aki berfungsi menyimpan energi listrik dan menyuplai kebutuhan kelistrikan."},
-{icon:"🛢️",q:"Fungsi utama oli mesin adalah...",a:["Melumasi komponen","Mengisi ban","Mengisi aki","Menyaring udara"],c:0,e:"Oli mengurangi gesekan, membantu pendinginan, dan membawa kotoran menuju filter."},
-{icon:"⚡",q:"Pada sepeda motor injeksi, ECU berfungsi untuk...",a:["Mengendalikan sistem berdasarkan sensor","Memompa ban","Mendinginkan radiator","Mengisi oli"],c:0,e:"ECU mengolah input sensor dan mengendalikan berbagai aktuator."},
-{icon:"🔥",q:"Fungsi utama busi pada mesin bensin adalah...",a:["Menghasilkan percikan api","Menyaring oli","Mengatur tekanan ban","Mendinginkan mesin"],c:0,e:"Busi menghasilkan percikan untuk membakar campuran udara dan bahan bakar."},
-{icon:"🌡️",q:"Komponen yang membuang panas coolant ke udara adalah...",a:["Radiator","Kopling","Injektor","Rantai"],c:0,e:"Radiator melepaskan panas coolant melalui sirip-sirip pendinginnya."},
-{icon:"🛞",q:"Komponen yang menjadi kontak langsung kendaraan dengan jalan adalah...",a:["Ban","Busi","ECU","Aki"],c:0,e:"Ban menghasilkan kontak dan gaya gesek dengan permukaan jalan."},
-{icon:"🔩",q:"Alat yang tepat untuk mengukur diameter luar dengan ketelitian tinggi adalah...",a:["Mikrometer","Palu","Obeng","Tang"],c:0,e:"Mikrometer digunakan untuk pengukuran dimensi kecil dengan ketelitian tinggi."},
-{icon:"⛓️",q:"Rantai sepeda motor meneruskan tenaga dari...",a:["Sprocket depan ke sprocket belakang","Aki ke ECU","Radiator ke mesin","Rem ke roda"],c:0,e:"Rantai meneruskan putaran dari sprocket penggerak ke sprocket roda belakang."},
-{icon:"🧰",q:"Sebelum menggunakan alat ukur, hal yang penting dilakukan adalah...",a:["Memastikan alat sesuai fungsi dan kondisinya","Memukul alat","Merendam alat","Melepas skala"],c:0,e:"Pemilihan alat dan pemeriksaan kondisi membantu menghasilkan pengukuran yang benar."},
-{icon:"🦺",q:"Saat bekerja di bengkel, penggunaan APD terutama bertujuan untuk...",a:["Melindungi keselamatan pekerja","Membuat pekerjaan lebih cepat","Menghemat bahan bakar","Menaikkan tenaga mesin"],c:0,e:"APD membantu melindungi pekerja dari risiko kecelakaan dan bahaya kerja."}
+const questions = [
+  {
+    icon:"⚙️",
+    q:"Komponen yang mengubah gerakan naik-turun piston menjadi gerakan berputar adalah...",
+    answers:["Poros engkol (crankshaft)","Camshaft","Rocker arm","Flywheel"],
+    correct:"Poros engkol (crankshaft)"
+  },
+  {
+    icon:"🌬️",
+    q:"Komponen yang berfungsi menyaring udara sebelum masuk ke mesin adalah...",
+    answers:["Fuel pump","Filter udara","Injector","Busi"],
+    correct:"Filter udara"
+  },
+  {
+    icon:"⚡",
+    q:"Fungsi utama busi pada mesin bensin adalah...",
+    answers:["Mengatur tekanan oli","Menyaring bahan bakar","Memercikkan bunga api untuk pembakaran","Mendinginkan radiator"],
+    correct:"Memercikkan bunga api untuk pembakaran"
+  },
+  {
+    icon:"🛞",
+    q:"Pada rem cakram, komponen yang menjepit kampas ke piringan cakram adalah...",
+    answers:["Master cylinder","Caliper","Reservoir","Brake pedal"],
+    correct:"Caliper"
+  },
+  {
+    icon:"🔄",
+    q:"Pada sistem CVT sepeda motor matic, komponen yang meneruskan putaran dari pulley depan ke pulley belakang adalah...",
+    answers:["Rantai","V-belt","Kampas rem","Gear starter"],
+    correct:"V-belt"
+  },
+  {
+    icon:"🔋",
+    q:"Komponen yang menyimpan energi listrik untuk kebutuhan kelistrikan sepeda motor adalah...",
+    answers:["Aki (battery)","Radiator","Injector","Kopling"],
+    correct:"Aki (battery)"
+  },
+  {
+    icon:"💧",
+    q:"Pada sistem pendingin cairan, komponen yang berfungsi membuang panas dari coolant ke udara adalah...",
+    answers:["Radiator","Throttle body","Fuel tank","Air filter"],
+    correct:"Radiator"
+  },
+  {
+    icon:"🎛️",
+    q:"Pada sepeda motor injeksi, komponen yang mengatur aliran udara masuk berdasarkan bukaan gas adalah...",
+    answers:["Throttle body","Oil pump","Regulator/rectifier","Ignition coil"],
+    correct:"Throttle body"
+  },
+  {
+    icon:"🛢️",
+    q:"Komponen yang menyaring kotoran dari oli mesin sebelum oli bersirkulasi adalah...",
+    answers:["Oil filter","Air filter","Fuel injector","Spark plug"],
+    correct:"Oil filter"
+  },
+  {
+    icon:"⚙️",
+    q:"Komponen yang menghubungkan dan memutus tenaga mesin ke transmisi pada sepeda motor manual adalah...",
+    answers:["Kopling","Radiator","Stator","Injector"],
+    correct:"Kopling"
+  }
 ];
 
-let index=0,score=0,correctAnswers=0,time=15,locked=false,timerId=null;
+let current = 0;
+let correctCount = 0;
+let score = 0;
+let timeLeft = 15;
+let timer = null;
+let answered = false;
+let startTime = 0;
+let elapsedSeconds = 0;
 
-const $=id=>document.getElementById(id);
-function startTimer(){
-clearInterval(timerId);time=15;$("timer").textContent=time;
-timerId=setInterval(()=>{time--;$("timer").textContent=time;
-if(time<=0){clearInterval(timerId);if(!locked)answer(-1);}
-},1000);
+const scoreEl = document.getElementById("score");
+const questionCountEl = document.getElementById("questionCount");
+const timeEl = document.getElementById("time");
+const progressBar = document.getElementById("progressBar");
+const iconEl = document.getElementById("icon");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const feedbackEl = document.getElementById("feedback");
+const quizArea = document.getElementById("quizArea");
+const resultArea = document.getElementById("resultArea");
+const finalScoreEl = document.getElementById("finalScore");
+const finalCountEl = document.getElementById("finalCount");
+const resultMessageEl = document.getElementById("resultMessage");
+
+function shuffle(array){
+  const arr = [...array];
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
-function render(){
-locked=false;clearInterval(timerId);
-const q=questions[index];
-$("number").textContent=(index+1)+"/"+questions.length;
-$("bar").style.width=((index)/questions.length*100)+"%";
-$("icon").textContent=q.icon;$("question").textContent=q.q;
-$("feedback").textContent="";$("next").classList.add("hidden");
-const box=$("answers");box.innerHTML="";
-q.a.forEach((txt,n)=>{const b=document.createElement("button");b.className="answer";b.textContent=txt;b.onclick=()=>answer(n);box.appendChild(b)});
-startTimer();
+
+function startGame(){
+  current = 0;
+  correctCount = 0;
+  score = 0;
+  elapsedSeconds = 0;
+  startTime = Date.now();
+
+  quizArea.classList.remove("hidden");
+  resultArea.classList.add("hidden");
+  scoreEl.textContent = "0";
+
+  showQuestion();
 }
-function answer(choice){
-if(locked)return;locked=true;clearInterval(timerId);
-const q=questions[index], buttons=[...$("answers").children];
-buttons.forEach((b,n)=>{b.disabled=true;if(n===q.c)b.classList.add("correct")});
-if(choice===q.c){correctAnswers++;score=Math.round((correctAnswers/questions.length)*100);buttons[choice].classList.add("correct");$("feedback").textContent="✅ BENAR! "+q.e}
-else if(choice===-1){$("feedback").textContent="⏰ WAKTU HABIS! Jawaban benar: "+q.a[q.c]+". "+q.e}
-else{buttons[choice].classList.add("wrong");$("feedback").textContent="❌ BELUM TEPAT. Jawaban benar: "+q.a[q.c]+". "+q.e}
-$("score").textContent=score;$("next").classList.remove("hidden");
+
+function showQuestion(){
+  clearInterval(timer);
+  answered = false;
+  timeLeft = 15;
+  timeEl.textContent = timeLeft;
+
+  const item = questions[current];
+
+  questionCountEl.textContent = `${current + 1}/${questions.length}`;
+  progressBar.style.width = `${(current / questions.length) * 100}%`;
+  iconEl.textContent = item.icon;
+  questionEl.textContent = item.q;
+  feedbackEl.textContent = "";
+
+  answersEl.innerHTML = "";
+
+  // KUNCI JAWABAN TIDAK LAGI SELALU A.
+  // Jawaban diacak setiap kali soal ditampilkan.
+  const shuffledAnswers = shuffle(item.answers);
+
+  shuffledAnswers.forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.className = "answer";
+    button.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${answer}`;
+    button.addEventListener("click", () => selectAnswer(button, answer, item.correct));
+    answersEl.appendChild(button);
+  });
+
+  timer = setInterval(() => {
+    timeLeft--;
+    timeEl.textContent = timeLeft;
+
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      timeUp();
+    }
+  }, 1000);
 }
-$("next").onclick=()=>{index++;if(index>=questions.length)finish();else render()};
-function finish(){
-clearInterval(timerId);$("game").classList.add("hidden");$("result").classList.remove("hidden");
-$("finalScore").textContent=score+" POIN";
-$("finalMessage").textContent=score===100?"🏆 Sempurna! Semua jawaban benar!":score>=80?"🔥 Mantap! Pengetahuan otomotifmu sangat bagus.":score>=60?"👍 Bagus! Tinggal tingkatkan lagi.":"🔧 Terus belajar dan coba lagi untuk mendapatkan nilai lebih tinggi!";
+
+function selectAnswer(button, selected, correct){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+
+  const buttons = [...document.querySelectorAll(".answer")];
+  buttons.forEach(btn => btn.disabled = true);
+
+  if(selected === correct){
+    button.classList.add("correct");
+    correctCount++;
+    score = correctCount * 10;
+    scoreEl.textContent = score;
+    feedbackEl.textContent = "✅ Benar! Jawaban tepat.";
+    feedbackEl.style.color = "#4ade80";
+  }else{
+    button.classList.add("wrong");
+    const correctButton = buttons.find(btn => btn.textContent.includes(correct));
+    if(correctButton) correctButton.classList.add("correct");
+    feedbackEl.textContent = `❌ Kurang tepat. Jawaban benar: ${correct}`;
+    feedbackEl.style.color = "#fca5a5";
+  }
+
+  setTimeout(nextQuestion, 850);
 }
-$("again").onclick=()=>{index=0;score=0;correctAnswers=0;$("score").textContent=0;$("game").classList.remove("hidden");$("result").classList.add("hidden");render()};
-$("share").onclick=async()=>{
-const text="Saya mendapat "+score+" poin di Game Tebak Komponen Motor! 🔧🏍️ Berani kalahkan skor saya?";
-if(navigator.share){try{await navigator.share({title:"Game Tebak Komponen Motor",text:text,url:location.href})}catch(e){}}
-else{alert(text+" Salin alamat game dari browser untuk membagikannya.");}
-};
-render();
+
+function timeUp(){
+  if(answered) return;
+  answered = true;
+
+  const buttons = [...document.querySelectorAll(".answer")];
+  buttons.forEach(btn => btn.disabled = true);
+
+  const correct = questions[current].correct;
+  const correctButton = buttons.find(btn => btn.textContent.includes(correct));
+  if(correctButton) correctButton.classList.add("correct");
+
+  feedbackEl.textContent = `⏰ Waktu habis. Jawaban benar: ${correct}`;
+  feedbackEl.style.color = "#fbbf24";
+
+  setTimeout(nextQuestion, 1000);
+}
+
+function nextQuestion(){
+  current++;
+
+  if(current >= questions.length){
+    finishGame();
+  }else{
+    showQuestion();
+  }
+}
+
+function finishGame(){
+  clearInterval(timer);
+
+  elapsedSeconds = Math.max(1, Math.round((Date.now() - startTime) / 1000));
+
+  quizArea.classList.add("hidden");
+  resultArea.classList.remove("hidden");
+
+  progressBar.style.width = "100%";
+
+  finalScoreEl.textContent = `${score} POIN`;
+  finalCountEl.textContent = `${correctCount}/${questions.length} SOAL BENAR`;
+
+  if(score === 100){
+    resultMessageEl.innerHTML = `🏆 <strong>Sempurna!</strong><br>Semua jawaban benar. Pengetahuan otomotifmu luar biasa!<br><br>Waktu bermain: ${elapsedSeconds} detik`;
+  }else if(score >= 80){
+    resultMessageEl.innerHTML = `🔥 <strong>Sangat bagus!</strong><br>Pengetahuan otomotifmu sudah sangat baik.<br><br>Waktu bermain: ${elapsedSeconds} detik`;
+  }else if(score >= 60){
+    resultMessageEl.innerHTML = `👍 <strong>Cukup bagus!</strong><br>Terus latihan agar semakin menguasai komponen motor.<br><br>Waktu bermain: ${elapsedSeconds} detik`;
+  }else{
+    resultMessageEl.innerHTML = `💪 <strong>Jangan menyerah!</strong><br>Pelajari kembali fungsi komponen motor dan coba lagi.<br><br>Waktu bermain: ${elapsedSeconds} detik`;
+  }
+}
+
+document.getElementById("restartBtn").addEventListener("click", startGame);
+
+document.getElementById("shareBtn").addEventListener("click", async () => {
+  const shareText = `Saya mendapat ${score} POIN (${correctCount}/10 benar) di Game Tebak Komponen Motor! Coba kalahkan skor saya!`;
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title:"Challenge Otomotif",
+        text:shareText,
+        url:window.location.href
+      });
+    }catch(e){}
+  }else{
+    try{
+      await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+      alert("Hasil permainan dan link sudah disalin. Silakan tempel di Facebook.");
+    }catch(e){
+      prompt("Salin teks berikut:", `${shareText}\n${window.location.href}`);
+    }
+  }
+});
+
+startGame();
 </script>
 </body>
 </html>
